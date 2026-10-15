@@ -1,0 +1,5 @@
+# Python dependencies for every example under pubsub_iox2/ (image/ and simple/).
+# Install with:  pip install -r requirements.txt
+iceoryx2==0.9.3
+numpy>=2.0
+opencv-python>=4.10

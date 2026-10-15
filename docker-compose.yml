@@ -1,0 +1,16 @@
+
+services:
+  zenoh-router:
+    image: eclipse/zenoh:latest
+    network_mode: "host"
+    # ports:
+    #   - "7447:7447/tcp"
+    #   - "7447:7447/udp"
+    #   - "8000:8000/tcp"
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "7447" ]
+      interval: 2s
+      timeout: 2s
+      retries: 5
+    #command: [ "--listen", "tcp/[::]:7447", "--listen", "udp/[::]:7447", "--rest-http-port", "8000" ]
+    command: [ "--listen", "tcp/[::]:7447", "--listen", "udp/[::]:7447", "--listen", "ws/[::]:8000" , "--rest-http-port", "8001"]

@@ -1,0 +1,14 @@
+[package]
+name = "image_publisher_rs"
+version = "0.1.0"
+edition = "2024"
+description = "iceoryx2 publisher of synthetic 1280x720 BGR frames drawn with OpenCV (service ws-icp/image)"
+publish = false
+
+[dependencies]
+iceoryx2 = "0.9.3"
+# Only the OpenCV modules we use: core (always built), imgproc (drawing), highgui (--show window).
+# `clang-runtime` is required: iceoryx2's build uses bindgen, which turns on clang-sys' `runtime`
+# feature for the whole build, so opencv's binding generator must load libclang at runtime too
+# (otherwise: "a `libclang` shared library is not loaded on this thread").
+opencv = { version = "0.101", default-features = false, features = ["imgproc", "highgui", "clang-runtime"] }

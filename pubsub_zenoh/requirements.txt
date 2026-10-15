@@ -1,0 +1,3 @@
+# Python dependencies for every example under pubsub_zenoh/.
+# Install with:  pip install -r requirements.txt
+eclipse-zenoh>=1.5
