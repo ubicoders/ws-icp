@@ -1,0 +1,6 @@
+eclipse-zenoh>=1.5
+# The vault's _pb2.py files refuse a protobuf runtime older than the protoc that
+# compiled them (protoc 35 here, so protobuf 7.35 or newer).
+protobuf>=7.35
+flatbuffers
+pillow

@@ -1,0 +1,34 @@
+module: pubsub_flutter
+language: python
+io_dir: swarmbotix_io
+description: Synthetic IMU, temperature, text, JPEG and raw-byte topics as ROS2 messages over zenoh, for the zenoh_flutter viewer
+publishers:
+  imu:
+    topic: imu
+    type: ros2/sensor_msgs/Imu
+    transport: zenoh
+  temperature:
+    topic: temperature
+    type: ros2/sensor_msgs/Temperature
+    transport: zenoh
+    encoding: fb
+  chatter:
+    topic: chatter
+    type: ros2/std_msgs/String
+    transport: zenoh
+  cam:
+    topic: cam
+    type: ros2/sensor_msgs/CompressedImage
+    transport: zenoh
+  raw:
+    topic: raw
+    type: ros2/std_msgs/UInt8MultiArray
+    transport: zenoh
+  markers:
+    topic: markers
+    type: ros2/custom/MarkerDetections
+    transport: zenoh
+  cube_poses:
+    topic: cube_poses
+    type: ros2/custom/CubePoses
+    transport: zenoh
