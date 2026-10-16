@@ -188,7 +188,7 @@ Two things are new compared to step 1:
 This step needs the `sb` tool installed, because the program reads the ROS2
 message definitions from its vault in `~/.swarmbotix/`.
 
-It publishes five topics:
+It publishes nine topics:
 
 | Key | Rate | Message | What is in it |
 |---|---|---|---|
@@ -197,6 +197,21 @@ It publishes five topics:
 | `elcom/ws_icp/pubsub_flutter/zenoh/chatter` | 2 Hz | `std_msgs/String` | `hello world 0`, `hello world 1`, ... |
 | `elcom/ws_icp/pubsub_flutter/zenoh/cam` | 30 Hz | `sensor_msgs/CompressedImage` | a 320x240 JPEG with a moving yellow rectangle |
 | `elcom/ws_icp/pubsub_flutter/zenoh/raw` | 5 Hz | `std_msgs/UInt8MultiArray` | 256 bytes counting up |
+| `elcom/ws_icp/pubsub_flutter/zenoh/markers` | 20 Hz | `custom/MarkerDetections` | three AprilTags circling in front of camera `sb00`, with position, angle and distance; every 5 seconds a few frames with no tag |
+| `elcom/ws_icp/pubsub_flutter/zenoh/cube_poses` | 20 Hz | `custom/CubePoses` | two cubes going round a 0.5 m circle; every 10 seconds cube 1 drops out (`alive` false) for 2 seconds |
+| `elcom/ws_icp/pubsub_flutter/zenoh/image` | 10 Hz | `sensor_msgs/Image` | a 640x512 grey test picture with a moving white square and a frame counter, as raw pixels: encoding `mono8`, one byte per pixel (327680 bytes) |
+| `elcom/ws_icp/pubsub_flutter/zenoh/debug_image` | 10 Hz | `sensor_msgs/Image` | the same picture in colour with three green boxes labelled `id 0` to `id 2`, like a marker detector's overlay: encoding `rgb8`, three bytes per pixel (983040 bytes) |
+
+`markers` and `cube_poses` are not standard ROS2 types: they are the same
+`ros2/custom/*` messages that the ws-ips pipeline publishes, so the app can
+decode the real ones too.
+
+`image` and `debug_image` are uncompressed, unlike the JPEG on `cam`: the
+message says how to read its `data` bytes with `width`, `height`, `encoding`
+and `step` (bytes per row, so `data` is `step` x `height` bytes). They are the
+same message that the ws-ips image relay will publish (keys
+`elcom/ws_ips/ips_image_relay-sbNN/zenoh/image` and `.../debug_image`), so the
+app renders those too.
 
 The key is built by `sb` from five parts: device (`elcom`, from
 `~/.swarmbotix/sb.config.yml`), workspace (`ws_icp`), module
@@ -209,7 +224,7 @@ these keys.
 python3 pubsub_flutter/main.py
 ```
 
-It prints the five keys, each with the message type it is tagged with, such
+It prints the nine keys, each with the message type it is tagged with, such
 as `application/protobuf;ros2/sensor_msgs/Imu`. That tag travels with every
 message, so the receiver knows how to decode the bytes.
 
@@ -219,7 +234,7 @@ message, so the receiver knows how to decode the bytes.
 sb topic list
 ```
 
-You should see the five `elcom/ws_icp/pubsub_flutter/zenoh/...` keys with their
+You should see the nine `elcom/ws_icp/pubsub_flutter/zenoh/...` keys with their
 message types (along with anything else running on your network). Then watch
 one of them:
 
@@ -238,9 +253,10 @@ from line to line. Press Ctrl-C and try
 
 **On the phone.** Connect it to the same Wi-Fi as this computer and open the
 zenoh_flutter app. Like the publisher, it runs as a peer: the two find each
-other by multicast, with no router. You should see the five topics: the IMU
+other by multicast, with no router. You should see the nine topics: the IMU
 values moving, the temperature, the `hello world N` text, the camera picture
-with its frame counter, and the raw bytes.
+with its frame counter, the raw bytes, the three markers, the two cubes, and
+the grey test picture with its colour debug version.
 
 > Note: if the phone shows nothing, the Wi-Fi is blocking multicast (common on
 > guest and campus networks). Use the router from step 4 instead. Start it with
@@ -250,7 +266,7 @@ with its frame counter, and the raw bytes.
 
 Stop the publisher with Ctrl-C.
 
-Where the code comes from: inside `pubsub_flutter/`, `sb io list` shows the five
+Where the code comes from: inside `pubsub_flutter/`, `sb io list` shows the nine
 publishers. Each was added with one command, such as
 
 ```sh

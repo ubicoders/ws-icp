@@ -32,3 +32,11 @@ publishers:
     topic: cube_poses
     type: ros2/custom/CubePoses
     transport: zenoh
+  image:
+    topic: image
+    type: ros2/sensor_msgs/Image
+    transport: zenoh
+  debug_image:
+    topic: debug_image
+    type: ros2/sensor_msgs/Image
+    transport: zenoh
